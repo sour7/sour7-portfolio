@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto flex flex-col items-center">
         <div className="flex space-x-6">
           <Link
-            href="https://www.linkedin.com/in/your-profile" // Replace with your LinkedIn URL
+            href="https://www.linkedin.com/in/sour7" // Replace with your LinkedIn URL
             target="_blank"
             rel="noopener noreferrer"
           >
