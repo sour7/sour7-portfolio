@@ -1,14 +1,15 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "./ui/button"
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link";
+import { Button } from "./ui/button";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = () => setIsOpen(!isOpen)
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const closeMenu = () => setIsOpen(false);
 
   const menuItems = [
     { href: "#about", label: "About" },
@@ -17,37 +18,29 @@ export function Navbar() {
     { href: "#experience", label: "Experience" },
     { href: "#projects", label: "Projects" },
     { href: "#github-activity", label: "GitHub" },
-    // { href: "#contact", label: "Contact" },
-  ]
+  ];
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
     const handleScroll = () => {
-      if (isOpen) {
-        setIsOpen(false)
+      if (isOpen && Math.abs(window.scrollY - lastScrollY) > 10) {
+        closeMenu();
       }
-    }
+      lastScrollY = window.scrollY;
+    };
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isOpen]);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [isOpen])
+  const handleClick = (e, href) => {
+    e.preventDefault();
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    closeMenu();
+  };
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
-    const target = document.querySelector(href)
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" })
-    }
-    if (isOpen) {
-      setIsOpen(false)
-    }
-  }
-
-  // Resume download URL (Google Drive)
   const resumeUrl =
-    "https://drive.google.com/uc?export=download&id=129VRi7SGY4BEpwHIodACtMFy6o5U1Ikn"
+    "https://drive.google.com/uc?export=download&id=129VRi7SGY4BEpwHIodACtMFy6o5U1Ikn";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/50 backdrop-blur-sm">
@@ -67,16 +60,12 @@ export function Navbar() {
             </Link>
           ))}
         </nav>
-        {/* Desktop "Hire Me" button */}
         <Button className="hidden md:inline-flex" asChild>
-          <a
-            href={resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
             Hire Me
           </a>
         </Button>
+        {/* Hamburger Menu Button */}
         <Button variant="ghost" className="md:hidden text-white" onClick={toggleMenu}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -95,40 +84,57 @@ export function Navbar() {
           </svg>
         </Button>
       </div>
+
+      {/* Fullscreen Overlay for Mobile Menu */}
       <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden"
-          >
-            <nav className="flex flex-col space-y-4 bg-gray-900 p-4">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-gray-300 transition-colors hover:text-white"
-                  onClick={(e) => handleClick(e, item.href)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              {/* Mobile "Hire Me" button */}
-              <Button className="w-full" asChild>
-                <a
-                  href={resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Hire Me
-                </a>
-              </Button>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+  {isOpen && (
+    <>
+      {/* Backdrop: Fullscreen Black with Blur */}
+      <motion.div
+        className="fixed inset-0 bg-black/80 backdrop-blur-lg z-40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={closeMenu}
+      />
+
+      {/* Menu Dropdown with Red Background */}
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", stiffness: 100, damping: 15 }}
+        className="fixed top-0 right-0 w-full h-full bg-gray-900 text-white z-50 shadow-xl flex flex-col"
+      >
+{/* Close Button at the Bottom */}
+       <button className="self-end text-end text-gray-400 hover:text-white p-6 bg-gray-600  w-full" onClick={closeMenu}>
+          ✕
+        </button>
+
+  <nav className="flex flex-col space-y-4 bg-gray-600 p-6">
+    {menuItems.map((item) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        className="text-lg text-gray-200 transition-colors hover:text-white"
+        onClick={(e) => handleClick(e, item.href)}
+      >
+        {item.label}
+      </Link>
+    ))}
+  </nav>
+  <Button className="pt-6 w-full bg-white text-red-600 hover:bg-gray-200" asChild>
+    <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
+      Hire Me
+    </a>
+  </Button>
+</motion.div>
+
+    </>
+  )}
+</AnimatePresence>
+
+
     </header>
-  )
+  );
 }
