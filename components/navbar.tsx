@@ -17,7 +17,7 @@ export function Navbar() {
     { href: "#experience", label: "Experience" },
     { href: "#projects", label: "Projects" },
     { href: "#github-activity", label: "GitHub" },
-    { href: "#contact", label: "Contact" },
+    // { href: "#contact", label: "Contact" },
   ]
 
   useEffect(() => {
