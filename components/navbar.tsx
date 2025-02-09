@@ -104,14 +104,14 @@ export function Navbar() {
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 100, damping: 15 }}
-        className="fixed top-0 right-0 w-full h-full bg-gray-900 text-white z-50 shadow-xl flex flex-col"
+        className="fixed top-0 right-0 w-1/2 h-full bg-gray-900 text-white z-50 shadow-xl flex flex-col"
       >
 {/* Close Button at the Bottom */}
-       <button className="self-end text-end text-gray-400 hover:text-white p-6 bg-gray-600  w-full" onClick={closeMenu}>
+       <button className="self-end text-end text-gray-400 hover:text-white p-6 bg-black/90  w-full" onClick={closeMenu}>
           ✕
         </button>
 
-  <nav className="flex flex-col space-y-4 bg-gray-600 p-6">
+  <nav className="flex flex-col space-y-4 bg-black/90 p-6">
     {menuItems.map((item) => (
       <Link
         key={item.href}
