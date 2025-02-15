@@ -4,7 +4,7 @@ import { SectionHeader } from "./section-header";
 export function Experience() {
   const experiences = [
     {
-      period: "May 2022 - Present",
+      period: "May 2023 - Present",
       title: "Software Developer Engineer",
       company: "Manufac Analytics, Gurugram, India",
       description:
